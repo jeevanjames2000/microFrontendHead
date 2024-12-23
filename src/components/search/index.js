@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete, TextField, Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { useSelector, useDispatch } from "react-redux";
+import { startSearch, setSearchResults, componentHide } from "host/configSlice";
 const AutoCompleteSearch = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState([]);
+  const isSearching = useSelector(
+    (state) => state.config.searchRoute.isSearching
+  );
+  const searchResults = useSelector(
+    (state) => state.config.searchRoute.results
+  );
   useEffect(() => {
     const storedSearches =
       JSON.parse(localStorage.getItem("searchHistory")) || [];
@@ -22,12 +31,17 @@ const AutoCompleteSearch = () => {
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && inputValue.trim()) {
       saveSearchToLocalStorage(inputValue);
-      console.log(`Searching for: ${inputValue}`);
+      dispatch(startSearch(true));
+      dispatch(setSearchResults(inputValue));
+      dispatch(componentHide(true));
       event.preventDefault();
     }
   };
-  const handleInputChange = (event, newInputValue) => {
+  const handleInputChange = (event, newInputValue, reason) => {
     setInputValue(newInputValue);
+    if (reason === "clear") {
+      dispatch(componentHide(false));
+    }
   };
   return (
     <Box sx={{ width: "100%", maxWidth: 300, mx: "auto" }}>
@@ -40,15 +54,11 @@ const AutoCompleteSearch = () => {
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Search..."
+            placeholder="Search..."
             variant="outlined"
             fullWidth
-            onKeyDown={handleKeyDown}
             InputLabelProps={{
-              sx: {
-                transform: "translate(14px, 12px)",
-                fontSize: "0.9rem",
-              },
+              sx: { transform: "translate(14px, 12px)", fontSize: "0.9rem" },
             }}
             InputProps={{
               ...params.InputProps,
@@ -72,7 +82,7 @@ const AutoCompleteSearch = () => {
             overflow: "auto",
           },
           "& .MuiAutocomplete-option:hover": {
-            backgroundColor: "primary.light",
+            backgroundColor: theme.palette.primary.light,
             color: "white",
           },
         }}

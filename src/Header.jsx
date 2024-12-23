@@ -6,16 +6,15 @@ import { useTheme } from "@mui/material/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { cartState } from "host/hostSlice";
 import { home } from "host/configSlice";
-
+import { IconButton } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 export default function Header() {
   const theme = useTheme();
   const isCartOpen = useSelector((state) => state.module.cartStore);
   const mainRoute = useSelector((state) => state.config.mainRoute);
+  console.log("mainRoute: ", mainRoute);
   const dispatch = useDispatch();
-
   const handleCartClick = () => {
     dispatch(cartState(!isCartOpen));
   };
@@ -42,6 +41,7 @@ export default function Header() {
         variant="h6"
         sx={{
           color: theme.typography.h6.color,
+          cursor: "pointer",
         }}
         onClick={handleRouteHome}
       >
@@ -52,8 +52,10 @@ export default function Header() {
         <AutocompleteSearch />
 
         <Box sx={{ display: "flex", gap: 1 }}>
-          <AccountCircleIcon fontSize="medium" />
-          <ShoppingCartIcon fontSize="medium" onClick={handleCartClick} />
+          <ProfileDropdown />
+          <IconButton onClick={handleCartClick}>
+            <ShoppingCartIcon fontSize="medium" style={{ cursor: "pointer" }} />
+          </IconButton>
         </Box>
       </Box>
     </Box>

@@ -12,9 +12,9 @@ const App = () => {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <ErrorBoundary>
-          <Header />
-        </ErrorBoundary>
+        {/* <ErrorBoundary> */}
+        <Header />
+        {/* </ErrorBoundary> */}
       </ThemeProvider>
     </Provider>
   );

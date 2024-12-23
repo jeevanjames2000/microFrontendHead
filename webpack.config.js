@@ -7,7 +7,7 @@ module.exports = (_, argv) => ({
   output: {
     publicPath:
       argv.mode === "development"
-        ? "http://localhost:8080/"
+        ? "http://localhost:5001/"
         : "https://micro-frontend-head.vercel.app/",
   },
 
@@ -16,7 +16,7 @@ module.exports = (_, argv) => ({
   },
 
   devServer: {
-    port: 8080,
+    port: 5001,
   },
 
   module: {
@@ -47,7 +47,10 @@ module.exports = (_, argv) => ({
       name: "head",
       filename: "remoteEntry.js",
       remotes: {
-        host: "host@https://microfrontend-host.vercel.app/remoteEntry.js",
+        host:
+          argv.mode === "development"
+            ? "host@http://localhost:5000/remoteEntry.js"
+            : "host@https://microfrontend-host.vercel.app/remoteEntry.js",
       },
       exposes: {
         "./Header": "./src/Header.jsx",
